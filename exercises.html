@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<!-- 폰에서 그림을 두 손가락으로 키워 볼 수 있어야 한다. maximum-scale 을 걸면
+     확대가 막힌다(앱 보고서에서 같은 문제로 고쳤다). -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>pidu 추천운동 그림</title>
+<link rel="stylesheet" href="css/style.css?v=432fda0">
+<style>
+  .ex-wrap { max-width: 1120px; margin: 0 auto; padding: 20px; }
+  .ex-lead { color: var(--muted); margin: 0 0 18px; }
+
+  .ex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 14px;
+  }
+  .ex-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  /* 그림은 원본 비율이 제각각이다. 칸 높이를 맞춰야 목록이 흔들리지 않는다. */
+  /* 시작·종료 두 장을 나란히. "12회"만 적혀 있으면 어디서 어디까지인지
+     모른다(사용자 지적). */
+  .ex-pair { display: flex; align-items: center; background: #fff; padding: 6px; }
+  .ex-pair img {
+    display: block;
+    width: 50%;
+    height: 180px;
+    object-fit: contain;
+  }
+  .ex-pair .arrow { color: var(--muted); font-size: 18px; padding: 0 2px; }
+  .ex-pair.one img { width: 100%; }
+  .ex-body { padding: 10px 12px 14px; border-top: 1px solid var(--line); }
+  .ex-name { font-weight: 700; }
+  .ex-dose { color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+
+  .tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  .tag-stretch { color: var(--invalid); background: var(--invalid-bg); }
+  .tag-strength { color: var(--good); background: var(--good-bg); }
+  .tag-tracked { color: var(--fair); background: var(--fair-bg); }
+  .tag-seated { color: #1F5FAD; background: #DCE7F6; }
+
+  .ex-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  /* 눌러서 크게 보기. 자바스크립트 없이 :target 으로 연다. */
+  .zoom {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 34, 48, .92);
+    z-index: 50;
+    padding: 16px;
+    text-align: center;
+  }
+  .zoom:target { display: flex; align-items: center; justify-content: center; }
+  .zoom img { max-width: 100%; max-height: 88vh; background: #fff; border-radius: 8px; }
+  .zoom .close {
+    position: absolute; top: 14px; right: 18px;
+    color: #fff; font-size: 30px; line-height: 1;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/subjects">
+      <span class="brand-mark"></span>
+      <span>pidu 추천운동 그림</span>
+    </a>
+  </div>
+</header>
+
+<main class="ex-wrap">
+  <p class="ex-lead">
+    보고서의 추천운동에 쓰이는 그림 <b id="count">40종</b>입니다.
+    <b>왼쪽이 시작, 오른쪽이 끝난 자세</b>입니다. 붉게 칠한 곳이 그 운동에서
+    쓰는 근육입니다. 그림을 누르면 크게 볼 수 있습니다.
+  </p>
+  <label class="ex-filter">
+    <input type="checkbox" id="seated-only">
+    휠체어·앉아서 할 수 있는 것만 보기
+  </label>
+  <div class="ex-grid" id="grid"></div>
+</main>
+
+<footer class="foot">
+  자세 항목마다 늘일 근육과 강화할 근육을 정하고, 거기에 맞는 운동을 붙입니다.
+  운동 구성은 개발 중 정한 초안이라 현장 적용 전 전문가 검토가 필요합니다.
+  의료기기가 아닙니다.
+</footer>
+
+<script>
+// lib/features/report/exercise_plan.dart 의 kExercises 를 그대로 옮긴 것이다.
+// 두 곳이 갈라지면 종이 보고서와 이 쪽이 다른 말을 하게 된다.
+const ITEMS = [
+  ['chin_tuck', '턱 당기기', 0, '10초 유지 × 10회', false, 1],
+  ['neck_side_stretch', '목 옆 늘이기', 1, '30초 × 3회', false, 1],
+  ['prone_y', '엎드려 Y 들기', 0, '10회 × 2세트', false],
+  ['chest_opener', '가슴 펴기', 1, '30초 × 3회', false, 1],
+  ['band_row', '밴드 로우', 0, '12회 × 3세트', true, 1],
+  ['side_lying_abduction', '옆으로 누워 다리 들기', 0, '15회 × 3세트', false],
+  ['side_bend_stretch', '서서 옆구리 늘이기', 1, '30초 × 3회', false],
+  ['side_plank', '사이드 플랭크', 0, '20초 × 3회(양쪽)', false],
+  ['hip_flexor_stretch', '고관절 앞 늘이기', 1, '30초 × 3회', false],
+  ['glute_bridge', '브릿지', 0, '12회 × 3세트', true],
+  ['band_lateral_walk', '밴드 옆걸음', 0, '10걸음 × 3회(양방향)', false],
+  ['dead_bug', '데드버그', 0, '10회 × 2세트', false],
+  ['ball_squeeze', '무릎 사이 공 조이기', 0, '5초 유지 × 15회', false, 1],
+  ['towel_curl', '수건 당기기', 0, '15회 × 3세트', false, 1],
+
+  ['external_rotation', '밴드 가쪽돌림', 0, '12회 × 3세트', true, 1],
+  ['overhead_raise', '만세 (양팔 위로)', 0, '10회 × 3세트', true, 1],
+  ['face_pull', '밴드 페이스 풀', 0, '12회 × 3세트', true, 1],
+  ['shoulder_flexion', '어깨 앞으로 들기', 0, '10회 × 3세트', true, 1],
+  ['seat_push_up', '좌면 푸시업 (압력 해소)', 0, '20초마다 15~30초씩', true, 1],
+  ['trunk_forward_bend', '앞으로 숙였다 세우기', 0, '10회 × 2세트', true, 1],
+  ['neck_isometric', '손으로 목 버티기', 0, '10초 × 각 방향 3회', false, 1],
+  ['seated_w_raise', '앉아 W 들기', 0, '10회 × 3세트', false, 1],
+  ['seated_y_raise', '앉아 Y 들기', 0, '10회 × 3세트', false, 1],
+  ['seated_knee_raise', '앉아 무릎 올리기', 0, '10회 × 2세트(양쪽)', false, 1],
+  ['seated_towel_row', '앉아 수건 당기기', 0, '12회 × 3세트', true, 1],
+  ['seated_curl', '앉아 밴드 컬', 0, '12회 × 3세트', true, 1],
+  ['seated_trunk_rotation', '앉아 몸통 돌리기', 1, '20초 × 3회(양쪽)', false, 1],
+  ['seated_scapular_squeeze', '앉아 날개뼈 모으기', 0, '5초 유지 × 12회', false, 1],
+
+  ['squat', '스쿼트', 0, '10회 × 3세트', true],
+  ['sit_to_stand', '앉았다 일어서기', 0, '10회 × 3세트', true],
+  ['elbow_curl', '팔꿈치 굽히기', 0, '12회 × 3세트', true],
+  ['shoulder_abduction', '어깨 옆으로 들기', 0, '10회 × 3세트', true],
+  ['wall_slide', '벽 슬라이드', 0, '10회 × 2세트', false],
+  ['calf_raise', '카프 레이즈', 0, '15회 × 3세트', false],
+  ['lunge', '런지', 0, '10회 × 2세트(양쪽)', false],
+  ['bird_dog', '버드독', 0, '10회 × 2세트', false],
+  ['hip_hinge', '힙 힌지', 0, '12회 × 3세트', false],
+  ['plank', '플랭크', 0, '20초 × 3회', false],
+  ['single_leg_stand', '한 발 서기', 0, '20초 × 3회(양쪽)', false],
+  ['lying_trunk_twist', '누워 무릎 넘기기', 1, '30초 × 3회(양쪽)', false],
+];
+
+const grid = document.getElementById('grid');
+const zooms = [];
+
+function draw(seatedOnly) {
+  grid.innerHTML = '';
+  let n = 0;
+  ITEMS.forEach(([id, name, stretch, dose, tracked, seated]) => {
+    if (seatedOnly && !seated) return;
+    n += 1;
+    const src = `img/ex/${id}.png`;
+    const card = document.createElement('article');
+    card.className = 'ex-card';
+    card.innerHTML = `
+      <a href="#zoom-${id}" class="ex-pair">
+        <img src="img/ex/${id}_start.png" alt="${name} 시작" loading="lazy"
+             onerror="this.closest('.ex-pair').classList.add('one');this.remove()">
+        <span class="arrow">→</span>
+        <img src="${src}" alt="${name}" loading="lazy">
+      </a>
+      <div class="ex-body">
+        <div class="ex-name">${n}. ${name}</div>
+        <div class="ex-dose">
+          <span class="tag ${stretch ? 'tag-stretch' : 'tag-strength'}">${stretch ? '늘이기' : '강화'}</span>
+          ${seated ? '<span class="tag tag-seated">앉아서</span>' : ''}
+          ${tracked ? '<span class="tag tag-tracked">앱이 셈</span>' : ''}
+          ${dose}
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  document.getElementById('count').textContent = `${n}종`;
+}
+
+ITEMS.forEach(([id, name]) => {
+  zooms.push(`
+    <div class="zoom" id="zoom-${id}">
+      <a class="close" href="#">×</a>
+      <a href="#" style="display:flex;align-items:center;gap:8px;max-width:100%">
+        <img src="img/ex/${id}_start.png" alt="${name} 시작"
+             onerror="this.remove()">
+        <img src="img/ex/${id}.png" alt="${name}">
+      </a>
+    </div>`);
+});
+document.body.insertAdjacentHTML('beforeend', zooms.join(''));
+
+const box = document.getElementById('seated-only');
+box.addEventListener('change', () => draw(box.checked));
+draw(false);
+</script>
+</body>
+</html>

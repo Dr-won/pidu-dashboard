@@ -1,0 +1,356 @@
+/* 앱(lib/ui/theme.dart)과 같은 색을 쓴다. 같은 자료를 보는 두 화면이 서로
+   달라 보이면 쓰는 사람이 딴 프로그램으로 여긴다. */
+
+:root {
+  --navy: #243447;
+  --brand-red: #E1251B;
+  --bg: #F3F5F8;
+  --surface: #FFFFFF;
+  --surface-alt: #EDF0F4;
+  --line: #E3E7EC;
+  --text: #1A2230;
+  --muted: #6B7684;
+
+  --good: #1B6B3A;      --good-bg: #DCF0E3;
+  --fair: #8A6100;      --fair-bg: #FBEFD3;
+  --poor: #9A4A10;      --poor-bg: #FBE4D4;
+  --invalid: #9B2C2C;   --invalid-bg: #F9DEDE;
+  --unknown: #5A6470;   --unknown-bg: #E8EBEE;
+
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(36, 52, 71, .06), 0 1px 8px rgba(36, 52, 71, .04);
+}
+
+* { box-sizing: border-box; }
+
+/* hidden 속성을 켠 것은 무조건 감춘다.
+   아래에서 .nav 와 .who 에 display:flex 를 주는데, 작성자 스타일이 브라우저
+   기본값보다 우선이라 그것만으로 [hidden]{display:none} 이 밀려난다. 그러면
+   로그인 전에도 메뉴와 로그아웃 단추가 그대로 보인다. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 "Pretendard", "Malgun Gothic", -apple-system, system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---- 상단 막대 ---- */
+
+.topbar {
+  background: var(--navy);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--brand-red);
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav a {
+  padding: 7px 13px;
+  border-radius: 7px;
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, .74);
+}
+
+.nav a:hover { background: rgba(255, 255, 255, .09); color: #fff; }
+.nav a.on { background: rgba(255, 255, 255, .15); color: #fff; font-weight: 600; }
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.who-name { color: rgba(255, 255, 255, .8); }
+
+/* ---- 본문 ---- */
+
+.view {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 26px 20px 60px;
+  min-height: 60vh;
+}
+
+.foot {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.01em; }
+h2 { font-size: 16.5px; margin: 28px 0 10px; letter-spacing: -.01em; }
+
+.sub { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+
+.loading, .empty {
+  color: var(--muted);
+  padding: 40px 0;
+  text-align: center;
+}
+
+.crumb {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.crumb a:hover { color: var(--text); text-decoration: underline; }
+
+/* ---- 상자 ---- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.row-main { flex: 1; min-width: 0; }
+.row-title { font-weight: 600; }
+.row-sub { color: var(--muted); font-size: 13.5px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+
+.stat-num { font-size: 27px; font-weight: 700; letter-spacing: -.02em; }
+.stat-label { color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+
+/* ---- 표 ---- */
+
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+
+th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr.clickable:hover { background: var(--surface-alt); cursor: pointer; }
+
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---- 품질 표시 ---- */
+
+.tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tag-good    { color: var(--good);    background: var(--good-bg); }
+.tag-fair    { color: var(--fair);    background: var(--fair-bg); }
+.tag-poor    { color: var(--poor);    background: var(--poor-bg); }
+.tag-invalid { color: var(--invalid); background: var(--invalid-bg); }
+.tag-unknown { color: var(--unknown); background: var(--unknown-bg); }
+
+/* ---- 단추 ---- */
+
+.btn {
+  font: inherit;
+  font-size: 14px;
+  padding: 7px 15px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: var(--navy);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:hover { filter: brightness(1.12); }
+.btn:disabled { opacity: .5; cursor: default; filter: none; }
+
+.btn-line { background: var(--surface); color: var(--text); border-color: var(--line); }
+.btn-line:hover { background: var(--surface-alt); filter: none; }
+
+.btn-danger { background: var(--invalid); }
+
+.btn-quiet {
+  background: transparent;
+  color: rgba(255, 255, 255, .8);
+  border-color: rgba(255, 255, 255, .28);
+}
+
+.btn-quiet:hover { background: rgba(255, 255, 255, .12); color: #fff; filter: none; }
+
+.btn-sm { padding: 5px 11px; font-size: 13.5px; }
+
+/* ---- 입력 ---- */
+
+label { display: block; font-size: 13.5px; color: var(--muted); margin-bottom: 5px; }
+
+input[type=text], input[type=email], input[type=password], input[type=search], select {
+  font: inherit;
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+input:focus, select:focus { outline: 2px solid var(--navy); outline-offset: -1px; }
+
+.field { margin-bottom: 14px; }
+
+/* ---- 로그인 ---- */
+
+.gate {
+  max-width: 380px;
+  margin: 8vh auto 0;
+}
+
+.notice {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.notice-error { background: var(--invalid-bg); color: var(--invalid); }
+.notice-wait  { background: var(--fair-bg);    color: var(--fair); }
+.notice-info  { background: var(--unknown-bg); color: var(--unknown); }
+
+/* ---- 사진과 골격 ---- */
+
+.shot {
+  position: relative;
+  background: #0E141B;
+  border-radius: var(--radius);
+  overflow: hidden;
+  line-height: 0;
+}
+
+.shot img { width: 100%; height: auto; display: block; }
+.shot canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.shot-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ---- 보고서 쪽 ---- */
+
+.report-pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.report-page {
+  width: 100%;
+  max-width: 820px;
+  height: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+/* 인쇄할 때는 보고서 쪽만. 한 쪽씩 끊는다. */
+@media print {
+  .topbar, .foot, .no-print { display: none !important; }
+  body { background: #fff; }
+  .view { padding: 0; max-width: none; }
+  .report-pages { gap: 0; }
+  .report-page {
+    max-width: none;
+    border: 0;
+    box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+  }
+}
+
+@media (max-width: 680px) {
+  .topbar-inner { gap: 12px; }
+  .nav a { padding: 7px 9px; font-size: 14px; }
+  .who-name { display: none; }
+  .view { padding: 18px 14px 50px; }
+  th, td { padding: 9px 8px; }
+}

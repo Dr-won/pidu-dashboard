@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>pidu 체형측정 사진 보내기</title>
+<link rel="stylesheet" href="css/style.css?v=432fda0">
+<style>
+  .up { max-width: 560px; margin: 0 auto; padding: 20px 20px 60px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .card h2 { font-size: 15px; margin: 0 0 4px; }
+  .card .hint { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; }
+
+  label.field { display: block; margin-bottom: 12px; font-weight: 600; font-size: 14px; }
+  label.field .sub { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  input[type=text], input[type=number], select, textarea {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px 12px;
+    font: inherit;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--navy); outline-offset: 1px; }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+
+  .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  /* style.css 에 label 전역 규칙이 있어(색·크기·여백) 그대로 두면 칸 안의
+     두 줄이 겹쳐 보인다. 여기서 다시 잡는다. */
+  .shot {
+    display: block;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--surface-alt);
+    color: var(--text);
+    font-size: 14px;
+    margin: 0;
+  }
+  .shot.has { border-style: solid; border-color: var(--navy); background: #fff; }
+  .shot .cap {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .shot .state {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 2px;
+    word-break: break-all;
+  }
+  .shot img { display: block; width: 100%; height: 96px; object-fit: contain; margin-top: 8px; }
+  .shot input { display: none; }
+
+  .btn-go {
+    width: 100%;
+    padding: 14px;
+    font: inherit;
+    font-weight: 700;
+    color: #fff;
+    background: var(--navy);
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .btn-go[disabled] { background: #9aa3ad; cursor: not-allowed; }
+
+  .msg { margin-top: 12px; padding: 12px 14px; border-radius: 8px; font-size: 14px; }
+  .msg.ok { color: var(--good); background: var(--good-bg); }
+  .msg.bad { color: var(--invalid); background: var(--invalid-bg); }
+  .msg.wait { color: var(--fair); background: var(--fair-bg); }
+
+  .privacy { color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#"><span class="brand-mark"></span><span>체형측정 사진 보내기</span></a>
+  </div>
+</header>
+
+<main class="up">
+  <div class="card">
+    <h2>접수코드</h2>
+    <p class="hint">측정을 진행한 곳에서 알려 준 코드를 적습니다.</p>
+    <label class="field">
+      <input type="text" id="code" placeholder="예) school2026" autocomplete="off"
+             autocapitalize="off" spellcheck="false">
+    </label>
+  </div>
+
+  <div class="card">
+    <h2>대상자 정보</h2>
+    <p class="hint">이름과 키는 꼭 있어야 합니다. 키를 모르면 어깨·골반 차이를 mm 로 알려 드릴 수 없습니다.</p>
+
+    <label class="field">이름
+      <input type="text" id="name" autocomplete="off">
+    </label>
+
+    <label class="field">이메일
+      <span class="sub">결과 보고서를 이 주소로 보내 드립니다. 원하지 않으면 비웁니다.</span>
+      <input type="email" id="email" autocomplete="email" autocapitalize="off"
+             spellcheck="false" placeholder="hong@example.com">
+    </label>
+
+    <div class="row">
+      <label class="field">성별
+        <select id="sex">
+          <option value="">고르세요</option>
+          <option value="남">남</option>
+          <option value="여">여</option>
+          <option value="미기재">밝히지 않음</option>
+        </select>
+      </label>
+      <label class="field">태어난 해
+        <input type="number" id="birth" placeholder="1990" min="1900" max="2030">
+      </label>
+    </div>
+
+    <div class="row">
+      <label class="field">키 (cm)
+        <input type="number" id="height" placeholder="170" min="80" max="250" step="0.1">
+      </label>
+      <label class="field">몸무게 (kg)
+        <input type="number" id="weight" min="10" max="300" step="0.1">
+      </label>
+    </div>
+
+    <label class="field">
+      <input type="checkbox" id="wheelchair" style="width:auto;margin-right:6px">
+      휠체어에 앉아 찍었습니다
+    </label>
+
+    <label class="field">남길 말
+      <span class="sub">좌석 조건, 불편한 곳 등. 없으면 비웁니다.</span>
+      <textarea id="note" rows="2"></textarea>
+    </label>
+  </div>
+
+  <div class="card">
+    <h2>사진 세 장</h2>
+    <p class="hint">
+      2~3m 떨어져 온몸이 다 나오게 찍습니다. 정면은 꼭 필요하고, 측면·후면은
+      있으면 더 정확합니다. 파일 이름은 신경 쓰지 않아도 됩니다.
+      <br>사진이 마음에 들지 않으면 <b>같은 이름으로 다시 보내면 됩니다.</b>
+      앞서 보낸 것을 대신합니다.
+    </p>
+    <div class="shots" id="shots"></div>
+  </div>
+
+  <button class="btn-go" id="go">보내기</button>
+  <div id="msg"></div>
+
+  <p class="privacy" style="margin-top:18px">
+    보내신 사진에는 얼굴이 담깁니다. 체형분석에만 쓰고, 분석이 끝나면 이 서버에서
+    지웁니다. 이메일은 결과 보고서를 보내는 데만 쓰고 보낸 뒤 지웁니다.
+    보내기를 누르면 이에 동의한 것으로 봅니다. 의료기기가 아니며 진단에 쓰지 않습니다.
+  </p>
+</main>
+
+<script type="module">
+import { createClient } from './vendor/supabase.js?v=432fda0';
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js?v=432fda0';
+
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const VIEWS = [
+  ['anterior', '정면'],
+  ['lateral', '측면'],
+  ['posterior', '후면'],
+];
+
+const picked = {};
+const shots = document.getElementById('shots');
+
+for (const [key, ko] of VIEWS) {
+  const box = document.createElement('label');
+  box.className = 'shot';
+  box.innerHTML = `
+    <span class="cap">${ko}</span>
+    <span class="state">누르기</span>
+    <input type="file" accept="image/*" data-view="${key}">`;
+  shots.appendChild(box);
+}
+
+shots.addEventListener('change', (e) => {
+  const input = e.target;
+  const file = input.files?.[0];
+  const box = input.closest('.shot');
+  const view = input.dataset.view;
+  if (!file) { delete picked[view]; box.classList.remove('has'); return; }
+
+  picked[view] = file;
+  box.classList.add('has');
+  box.querySelector('.state').textContent = `${Math.round(file.size / 1024)}KB`;
+  // 고른 사진을 바로 보여 준다. 엉뚱한 사진을 붙이는 일이 흔하다.
+  let img = box.querySelector('img');
+  if (!img) { img = document.createElement('img'); box.appendChild(img); }
+  img.src = URL.createObjectURL(file);
+});
+
+const $ = (id) => document.getElementById(id);
+const msg = $('msg');
+
+function say(text, kind) {
+  msg.className = `msg ${kind}`;
+  msg.textContent = text;
+  msg.style.whiteSpace = 'pre-line';
+}
+
+$('go').addEventListener('click', async () => {
+  const code = $('code').value.trim();
+  const name = $('name').value.trim();
+  const height = parseFloat($('height').value);
+
+  if (!code) return say('접수코드를 적어 주세요.', 'bad');
+  // 접수코드는 보관함 경로의 첫 칸이 된다. 보관함이 한글 경로를 막으므로
+  // 코드도 영문·숫자여야 한다.
+  if (!/^[A-Za-z0-9._-]+$/.test(code)) {
+    return say('접수코드는 영문과 숫자로 적어 주세요.', 'bad');
+  }
+  if (!name) return say('이름을 적어 주세요.', 'bad');
+  if (!(height >= 80 && height <= 250)) {
+    return say('키를 80~250 사이로 적어 주세요.', 'bad');
+  }
+  if (!picked.anterior) return say('정면 사진은 꼭 필요합니다.', 'bad');
+
+  $('go').disabled = true;
+  say('보내는 중…', 'wait');
+
+  try {
+    // 한 사람이 올린 한 묶음. 같은 이름이 여럿 와도 섞이지 않는다.
+    const batch = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const views = [];
+
+    for (const [key] of VIEWS) {
+      const file = picked[key];
+      if (!file) continue;
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      // 경로에 한글을 쓸 수 없다(보관함이 Invalid key 로 막는다). 이름은
+      // 표에 남으니 파일은 방향만으로 이름 짓고, 나스로 내려받을 때
+      // `<이름>_정면.jpg` 로 바꾼다.
+      const path = `${code}/${batch}/${key}.${ext}`;
+      // upsert 를 켜면 안 된다. 덮어쓰기는 UPDATE 권한을 요구하는데, 접수
+      // 정책은 넣기(INSERT)만 열어 두어서 서버가 통째로 막는다("new row
+      // violates row-level security policy"). 묶음 이름이 매번 달라 덮어쓸
+      // 일도 없다.
+      const { error } = await sb.storage.from('intake').upload(path, file, {
+        contentType: file.type || 'image/jpeg',
+      });
+      if (error) throw error;
+      views.push(key);
+    }
+
+    const { error } = await sb.from('intake_uploads').insert({
+      code, batch, name,
+      email: $('email').value.trim() || null,
+      sex: $('sex').value || null,
+      birth: $('birth').value || null,
+      height_cm: height,
+      weight_kg: parseFloat($('weight').value) || null,
+      wheelchair: $('wheelchair').checked,
+      note: $('note').value.trim() || null,
+      views,
+    });
+    if (error) throw error;
+
+    say(
+      `${name} 님 사진 ${views.length}장을 보냈습니다. 창을 닫으셔도 됩니다.\n` +
+      '사진이 마음에 들지 않으면 아래에서 다시 보낼 수 있습니다.',
+      'ok',
+    );
+    // 다 보낸 뒤에도 다시 보낼 길을 열어 둔다. 단추를 잠가 두면 사진이
+    // 흔들린 것을 알아채고도 창을 새로 열어야 한다.
+    $('go').textContent = '다시 보내기';
+    $('go').disabled = false;
+    for (const box of document.querySelectorAll('.shot')) {
+      box.classList.remove('has');
+      box.querySelector('.state').textContent = '누르기';
+      box.querySelector('img')?.remove();
+      box.querySelector('input').value = '';
+    }
+    for (const k of Object.keys(picked)) delete picked[k];
+  } catch (e) {
+    // 코드가 틀리면 서버가 막는다. 화면에서만 검사하면 지나칠 수 있다.
+    const text = String(e?.message ?? e);
+    say(
+      /policy|row-level|denied|not authorized/i.test(text)
+        ? '접수코드가 맞지 않거나 접수가 끝났습니다. 알려 준 코드를 다시 확인해 주세요.'
+        : `보내지 못했습니다: ${text}`,
+      'bad',
+    );
+    $('go').disabled = false;
+  }
+});
+</script>
+</body>
+</html>

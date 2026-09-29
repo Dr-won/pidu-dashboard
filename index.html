@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>pidu 측정 자료</title>
+<link rel="stylesheet" href="css/style.css?v=432fda0">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/subjects">
+      <span class="brand-mark"></span>
+      <span>pidu 측정 자료</span>
+    </a>
+    <nav id="nav" class="nav" hidden>
+      <a href="#/subjects" data-route="subjects">대상자</a>
+      <a href="#/overview" data-route="overview">수집 현황</a>
+      <a href="#/approvals" data-route="approvals" data-admin-only hidden>측정자 승인</a>
+      <a href="#/intake" data-route="intake" data-admin-only hidden>사진 접수</a>
+    </nav>
+    <div id="who" class="who" hidden>
+      <span id="who-name" class="who-name"></span>
+      <button id="signout" class="btn btn-quiet" type="button">로그아웃</button>
+    </div>
+  </div>
+</header>
+
+<main id="view" class="view">
+  <div class="loading">불러오는 중…</div>
+</main>
+
+<footer class="foot">
+  측정값과 사진은 연구·교육 목적으로 보관됩니다. 대상자는 연구코드로만 식별하며,
+  담당 교수와 측정한 본인만 볼 수 있습니다.
+</footer>
+
+<script type="module" src="js/main.js?v=432fda0"></script>
+</body>
+</html>
