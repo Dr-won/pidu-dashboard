@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121417">
+<title>닥터원 측정평가 자료</title>
+<link rel="icon" href="img/drpma_icon.png">
+<link rel="stylesheet" href="css/style.css?v=e568c44">
+</head>
+<body>
+
+<div class="shell">
+  <!-- 왼쪽 메뉴. 로그인 전에는 감춘다(body.signed-in 이 없으면 CSS 가 접는다). -->
+  <aside class="side">
+    <a class="brand" href="#/home">
+      <img src="img/drpma_icon.png" alt="">
+      <span><b>Dr.PMA 대시보드</b><small>닥터원 측정평가 자료</small></span>
+    </a>
+
+    <nav id="nav" class="nav" hidden>
+      <a href="#/home" data-route="home">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/></svg>
+        측정 자료
+      </a>
+      <a href="#/subjects" data-route="subjects">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.3"/><path d="M15.5 14.2c3 .2 5.5 2.6 5.5 5.8"/></svg>
+        대상자
+      </a>
+      <a href="#/overview" data-route="overview">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        수집 현황
+      </a>
+      <div class="nav-sep" data-admin-only hidden>관리</div>
+      <a href="#/approvals" data-route="approvals" data-admin-only hidden>
+        <svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.2"/><path d="M3.5 20c0-3.6 2.9-6.5 6.5-6.5 1.4 0 2.6.4 3.6 1.1"/><path d="M15 18l2 2 4-4.5"/></svg>
+        측정자 승인
+      </a>
+      <a href="#/intake" data-route="intake" data-admin-only hidden>
+        <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2.5h4L15.5 6"/></svg>
+        사진 접수
+      </a>
+    </nav>
+
+    <div class="side-gap"></div>
+    <a class="side-link" href="exercises.html" target="_blank" rel="noopener">추천운동 그림 ›</a>
+    <div id="who" class="who" hidden>
+      <span id="who-av" class="who-av"></span>
+      <span id="who-name" class="who-name"></span>
+      <button id="signout" class="btn btn-quiet btn-icon" type="button" title="로그아웃" aria-label="로그아웃">
+        <svg viewBox="0 0 24 24"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <main id="view" class="view">
+      <div class="loading">불러오는 중…</div>
+    </main>
+
+    <footer class="foot">
+      측정값과 사진은 연구·교육 목적으로 보관됩니다. 대상자는 연구코드로만 식별하며,
+      담당 교수와 측정한 본인만 볼 수 있습니다.
+    </footer>
+  </div>
+</div>
+
+<script type="module" src="js/main.js?v=e568c44"></script>
+</body>
+</html>

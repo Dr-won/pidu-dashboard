@@ -1,0 +1,695 @@
+/* Dr.PMA 새 디자인(F2 · 차콜 다크 + 핑크·파스텔 블루).
+   앱 시안(app_logos/site/pma-design/f2pb.html)과 같은 색을 쓴다. 같은 자료를
+   보는 두 화면이 서로 달라 보이면 쓰는 사람이 딴 프로그램으로 여긴다.
+
+   색의 뜻은 앱과 같다.
+   - 핑크: 누를 단추(주된 일), 주의해서 볼 값
+   - 블루: 좋아진 값, 링크·안내선
+   PC 에서 앉아 보는 자리라 왼쪽에 메뉴, 오른쪽을 넓게 쓴다(Dr.PEA PC 시안). */
+
+:root {
+  --bg: #121417;
+  --card: #1D2025;
+  --card2: #24282E;
+  --ink: #F1F2F4;
+  --line: #2A2E35;
+  --muted: #8B919C;
+  --pink: #F9A8C9;   --on-pink: #2A1420;   --pink-soft: rgba(249, 168, 201, .12);
+  --blue: #9CC9FF;   --on-blue: #0E1A2B;   --blue-soft: rgba(156, 201, 255, .12);
+
+  /* 예전 이름. 페이지 스크립트가 style="color:var(--muted)" 처럼 직접 쓰는
+     것이 있어 남겨 둔다. */
+  --text: var(--ink);
+  --surface: var(--card);
+  --surface-alt: var(--card2);
+  --invalid: var(--pink);
+
+  --radius: 8px;
+  --side-w: 232px;
+}
+
+* { box-sizing: border-box; }
+
+/* hidden 속성을 켠 것은 무조건 감춘다.
+   아래에서 .nav 와 .who 에 display:flex 를 주는데, 작성자 스타일이 브라우저
+   기본값보다 우선이라 그것만으로 [hidden]{display:none} 이 밀려난다. 그러면
+   로그인 전에도 메뉴와 로그아웃 단추가 그대로 보인다. */
+[hidden] { display: none !important; }
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.6 "Pretendard Variable", "Pretendard", "Malgun Gothic", -apple-system, system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+a { color: inherit; text-decoration: none; }
+code { font-size: 13px; color: var(--blue); }
+b, strong { font-weight: 700; }
+
+/* ---- 뼈대: 왼쪽 메뉴 + 본문 ---- */
+
+.shell { display: flex; min-height: 100vh; }
+
+/* 본문이 길어 아래로 내려가도 왼쪽 칸 바탕과 경계선이 끝까지 이어지게. */
+body.signed-in .shell {
+  background: linear-gradient(to right,
+    #16191D calc(var(--side-w) - 1px), var(--line) calc(var(--side-w) - 1px),
+    var(--line) var(--side-w), transparent var(--side-w));
+}
+
+.side {
+  width: var(--side-w);
+  flex: none;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 22px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-right: 1px solid var(--line);
+  background: #16191D;
+}
+
+/* 로그인 전에는 메뉴가 없으니 왼쪽 칸도 접는다. 로그인 칸 위에 이름표를 따로 둔다. */
+body:not(.signed-in) .side { display: none; }
+body:not(.signed-in) .foot { max-width: 520px; margin: 0 auto; text-align: center; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 8px 24px;
+}
+
+.brand img { width: 40px; height: 40px; border-radius: 10px; display: block; }
+.brand b { display: block; font-size: 16px; letter-spacing: -.01em; line-height: 1.2; white-space: nowrap; }
+.brand small { display: block; font-size: 12px; color: var(--muted); font-weight: 600; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.nav svg {
+  width: 19px; height: 19px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+.nav a:hover { color: var(--ink); background: var(--card); }
+.nav a.on { background: var(--card2); color: var(--ink); }
+.nav a.on svg { stroke: var(--pink); }
+
+.nav-sep {
+  margin: 14px 12px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  color: var(--muted);
+}
+
+.side-gap { flex: 1; }
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13.5px;
+}
+
+.who-av {
+  width: 32px; height: 32px; flex: none;
+  border-radius: 50%;
+  background: var(--card2);
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 14px;
+}
+
+.who-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.btn-icon { padding: 6px; border-radius: 6px; }
+.btn-icon svg {
+  width: 18px; height: 18px; display: block;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.btn-icon:hover { background: var(--card2); }
+
+.side-link {
+  display: block;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.side-link:hover { color: var(--blue); }
+
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+/* ---- 본문 ---- */
+
+.view {
+  width: 100%;
+  max-width: 1240px;
+  padding: 32px 40px 60px;
+  min-height: 60vh;
+  flex: 1;
+}
+
+.foot {
+  max-width: 1240px;
+  padding: 0 40px 32px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+h1 { font-size: 28px; font-weight: 700; margin: 0 0 4px; letter-spacing: -.03em; line-height: 1.25; }
+h2 { font-size: 17px; font-weight: 700; margin: 34px 0 12px; letter-spacing: -.01em; }
+
+.sub { color: var(--muted); font-size: 14.5px; margin: 0 0 22px; }
+
+.loading, .empty {
+  color: var(--muted);
+  padding: 40px 0;
+  text-align: center;
+}
+
+.crumb {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.crumb a { color: var(--blue); }
+.crumb a:hover { text-decoration: underline; }
+
+/* 제목과 오른쪽 단추를 한 줄에. */
+.page-top { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 6px; }
+.page-top h1 { flex: 1; margin: 0; }
+
+/* ---- 상자 ---- */
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+/* 표를 담는 상자. 안쪽 여백은 표 칸이 가진다. */
+.card-table { padding: 4px 20px; overflow: auto; }
+
+.muted { color: var(--muted); }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.row-main { flex: 1; min-width: 0; }
+.row-title { font-weight: 700; }
+.row-sub { color: var(--muted); font-size: 13.5px; }
+
+/* 상자 안에 여러 줄이 쌓일 때 줄 사이를 가는 선으로. */
+.card .row + .row { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+/* 숫자 칸. 앱 결과 화면의 KPI 와 같은 모양 — 위 굵은 선, 큰 숫자, 작은 이름. */
+.stat {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+
+.stat-num {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-num.warn { color: var(--pink); }
+.stat-val { font-size: 16px; font-weight: 700; }
+.stat-label { color: var(--muted); font-size: 13px; font-weight: 600; margin-top: 4px; }
+
+/* 수집 현황 맨 위 숫자 넷. 상자 대신 가는 선으로 나눈다(앱 KPI 와 같음). */
+.kpi {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+  margin: 4px 0 8px;
+}
+
+.kpi .stat { background: none; border-radius: 0; padding: 14px 0 14px 18px; }
+.kpi .stat:first-child { padding-left: 0; }
+.kpi .stat + .stat { border-left: 1px solid var(--line); }
+.kpi .stat-num { font-size: 40px; margin-top: 2px; }
+
+/* ---- 표 ---- */
+
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+
+th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: .04em;
+  padding: 12px 12px 8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 11px 12px;
+  border-top: 1px solid var(--line);
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+th:first-child, td:first-child { padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+
+tbody tr.clickable { cursor: pointer; }
+tbody tr.clickable:hover td { background: var(--card2); }
+tbody tr.clickable:hover td:first-child { box-shadow: -20px 0 0 var(--card2); }
+tbody tr.clickable:hover td:last-child { box-shadow: 20px 0 0 var(--card2); }
+
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chev { color: var(--muted); }
+
+/* 값의 뜻. 블루 = 좋아짐, 핑크 = 나빠짐·주의.
+   (.up 은 upload.html 이 본문 상자 이름으로 쓰고 있어 피한다.) */
+.better { color: var(--blue); }
+.worse { color: var(--pink); }
+
+/* ---- 상태 딱지 ----
+   보고서의 유지·경계·위험과 같은 색. 측정 품질 양호·보통·미흡·무효도 이 세
+   색에 얹는다 — 좋으면 블루, 보통이면 회색, 손봐야 하면 핑크. */
+
+.tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.tag-keep, .tag-good          { color: var(--blue);  background: var(--blue-soft); }
+.tag-watch, .tag-fair,
+.tag-unknown                  { color: #C4C8CF;      background: var(--card2); }
+.tag-risk, .tag-poor,
+.tag-invalid                  { color: var(--pink);  background: var(--pink-soft); }
+.tag-invalid                  { box-shadow: inset 0 0 0 1px rgba(249, 168, 201, .45); }
+
+/* ---- 단추 ---- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 9px 16px;
+  border-radius: 6px;
+  border: 0;
+  background: var(--pink);
+  color: var(--on-pink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:hover { filter: brightness(1.06); }
+.btn:disabled { opacity: .45; cursor: default; filter: none; }
+.btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* 테두리만 있는 단추. 주된 일이 아닌 것. */
+.btn-line {
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1.5px var(--line);
+}
+.btn-line:hover { background: var(--card2); filter: none; }
+
+/* 밝은 단추. 보고서 보기처럼 "다음에 볼 것". */
+.btn-light { background: var(--ink); color: var(--bg); }
+
+.btn-danger { background: var(--pink); color: var(--on-pink); }
+
+.btn-quiet {
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 4px 8px;
+}
+.btn-quiet:hover { color: var(--ink); filter: none; }
+
+.btn-sm { padding: 6px 12px; font-size: 13.5px; }
+
+/* ---- 입력 ---- */
+
+label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+
+input[type=text], input[type=email], input[type=password], input[type=search],
+input[type=number], select, textarea {
+  font: inherit;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+}
+
+input::placeholder, textarea::placeholder { color: #5E646E; }
+
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--pink); outline-offset: -1px; border-color: transparent; }
+
+input[type=checkbox] { accent-color: var(--pink); }
+
+.field { margin-bottom: 14px; }
+
+.search { max-width: 360px; }
+
+/* ---- 로그인 ---- */
+
+.gate {
+  max-width: 380px;
+  margin: 10vh auto 0;
+}
+
+.gate-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.gate-brand img { width: 48px; height: 48px; border-radius: 12px; }
+.gate-brand b { display: block; font-size: 20px; letter-spacing: .02em; line-height: 1.2; }
+.gate-brand small { display: block; font-size: 12.5px; color: var(--muted); }
+
+.gate h1 { font-size: 26px; }
+
+.notice {
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.6;
+  background: var(--card);
+  color: var(--ink);
+  border-left: 3px solid var(--muted);
+}
+
+.notice-error { background: var(--pink-soft); color: var(--pink); border-left-color: var(--pink); }
+.notice-wait  { background: var(--card); color: var(--ink); border-left-color: var(--pink); }
+.notice-info  { background: var(--card); color: #C4C8CF; border-left-color: var(--blue); }
+
+/* ---- 첫 화면의 측정 종류 띠 ---- */
+
+/* 앱 첫화면과 같은 사진, 같은 비율이다(assets/home → img/home).
+   같은 자료를 보는 두 화면이라 입구도 같아야 한다 — 앱에서 체형분석을
+   누르던 사람이 웹에서도 같은 그림을 찾는다.
+
+   사진은 밝은 바탕이라 차콜 화면에서 혼자 튄다. 앱 시안의 큰 띠(.lead)처럼
+   왼쪽을 차콜로 덮어 글자를 얹고, 사람이 선 오른쪽만 사진이 보이게 한다.
+   넓은 화면이므로 둘씩 놓는다. 창을 좁히면 한 줄로 떨어진다. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+@media (max-width: 720px) {
+  .tiles { grid-template-columns: 1fr; }
+}
+
+.tile {
+  position: relative;
+  display: block;
+  aspect-ratio: 358 / 150;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card) right center / cover no-repeat;
+}
+
+.tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(29, 32, 37, .97) 0%, rgba(29, 32, 37, .9) 38%,
+    rgba(29, 32, 37, .25) 66%, rgba(29, 32, 37, .05) 100%);
+  transition: background-color .12s ease;
+}
+
+.tile:hover::before { background-color: rgba(249, 168, 201, .06); }
+.tile:hover .tile-go { filter: brightness(1.06); }
+
+/* 글자는 사진 왼쪽의 빈자리에 얹는다. 사진이 오른쪽에 치우쳐 구워져 있어
+   사람과 겹치지 않는다(tool/brand/home_assets.py). */
+.tile-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 22px;
+  max-width: 60%;
+}
+
+.tile-title {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  color: var(--ink);
+}
+
+.tile-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* 아직 올라온 자료가 없는 종류. 숨기지 않는다 — 빈 것도 정보다. */
+.tile-count {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 700;
+  margin-top: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile-count.none { color: var(--muted); font-weight: 500; }
+
+/* 앱 시안의 핑크 "시작" 딱지 자리. 웹에서는 보러 들어가는 것이라 "보기". */
+.tile-go {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  background: var(--pink);
+  color: var(--on-pink);
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 4px;
+}
+
+/* 결과지 샘플 — 첫 화면 맨 아래. 측정 자료와 섞이지 않게 선으로 가른다. */
+.samples {
+  margin-top: 34px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.samples h2 { margin: 0 0 4px; }
+.sample-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.sample {
+  display: block;
+  padding: 13px 15px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow .12s, background-color .12s;
+}
+.sample:hover { background: var(--card2); box-shadow: inset 0 0 0 1px var(--pink); }
+.sample-title {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+}
+/* PDF 로 열린다는 것을 미리 알린다. 새 창이 뜨는 까닭이 된다. */
+.sample-title::after {
+  content: ' PDF';
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pink);
+  vertical-align: 2px;
+}
+.sample-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---- 사진과 골격 ---- */
+
+.shot {
+  position: relative;
+  background: #000;
+  border-radius: var(--radius);
+  overflow: hidden;
+  line-height: 0;
+}
+
+.shot img { width: 100%; height: auto; display: block; }
+.shot canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.shot-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ---- 보고서 쪽 ----
+   흰 A4 를 차콜 위에 그대로 얹는다. 기본은 본문 폭에 맞추고, 단추로 키우고
+   줄인다. --zoom 은 report.js 가 바꾼다. */
+
+.report-tools {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 0;
+  margin-bottom: 8px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.report-tools .zoom-val {
+  min-width: 56px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.report-tools .gap { flex: 1; }
+
+.report-scroll { overflow-x: auto; padding: 8px 0 20px; }
+
+.report-pages {
+  --zoom: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: calc(100% * var(--zoom));
+  margin: 0 auto;
+}
+
+.report-page {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
+  cursor: zoom-in;
+}
+
+.report-pages.zoomed .report-page { cursor: zoom-out; }
+
+.page-no {
+  align-self: flex-start;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: -14px;
+}
+
+/* 인쇄할 때는 보고서 쪽만. 한 쪽씩 끊는다. */
+@media print {
+  .side, .foot, .no-print, .report-tools, .page-no { display: none !important; }
+  html { color-scheme: light; }
+  body { background: #fff; }
+  .view { padding: 0; max-width: none; }
+  .report-scroll { overflow: visible; padding: 0; }
+  .report-pages { gap: 0; width: 100% !important; }
+  .report-page {
+    max-width: none;
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+  }
+}
+
+/* 좁은 화면(노트북 창을 반으로 나눴을 때 등). 메뉴를 위로 올린다. */
+@media (max-width: 860px) {
+  .shell { flex-direction: column; }
+  body.signed-in .shell { background: none; }
+  .side {
+    width: auto; height: auto; position: static;
+    flex-direction: row; flex-wrap: wrap; align-items: center;
+    padding: 10px 14px; gap: 6px;
+    border-right: 0; border-bottom: 1px solid var(--line);
+  }
+  .brand { padding: 0 8px 0 0; }
+  .brand small, .nav-sep, .side-gap, .side-link { display: none; }
+  .nav { flex-direction: row; flex-wrap: wrap; }
+  .nav a { padding: 7px 10px; font-size: 14px; }
+  .nav svg { display: none; }
+  .who { border-top: 0; padding: 0; margin-left: auto; }
+  .who-name, .who-av { display: none; }
+  .view { padding: 20px 16px 50px; }
+  .foot { padding: 0 16px 30px; }
+  .kpi { grid-template-columns: 1fr 1fr; }
+  .kpi .stat:nth-child(3) { border-left: 0; padding-left: 0; }
+  th, td { padding-left: 8px; padding-right: 8px; }
+}
